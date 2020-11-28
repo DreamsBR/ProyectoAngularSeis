@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "angularcliente-ec0ad": {
+      "hosting": {
+        "AngularCliente": [
+          "angularcliente-ec0ad"
+        ]
+      }
+    }
+  }
+}
