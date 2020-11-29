@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-
+import {map} from "rxjs/operators"
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +15,11 @@ export class CrudService {
 
   get_Allemployee()
   {
-    return this.fireservices.collection('Cliente').snapshotChanges();
+    return this.fireservices.collection<Cliente>('Cliente').valueChanges().pipe(map(res=>{
+      console.log("desde service",res);
+
+      return res
+    }));
   }
 
   update_employee(recordid, record)
@@ -30,4 +34,10 @@ export class CrudService {
 
 
 
+}
+export interface Cliente {
+  fechanac: string;
+  nombre:   string;
+  apellido: string;
+  edad:     number;
 }

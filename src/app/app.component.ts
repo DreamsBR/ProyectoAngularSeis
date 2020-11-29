@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import {CrudService} from './service/crud.service';
+import { Observable } from 'rxjs';
+import {Cliente, CrudService} from './service/crud.service';
 
 @Component({
   selector: 'app-root',
@@ -9,51 +10,56 @@ import {CrudService} from './service/crud.service';
 export class AppComponent {
   title = 'angular9-firebaseapp';
 
-cliente: any;
+cliente: Cliente[];
+sumaEdades: number;
 
 nombre:string;
 apellido:string;
-edad:string;
+edad:number;
 fechanac:string;
 message:string;
 
 
 
-promerdio : number;
 
 
 
+
+prueba : Observable<any>;
 
   constructor(public crudservice:CrudService){}
 
 ngOnInit() {
 
+this.prueba =  this.crudservice.get_Allemployee();
+
+this.crudservice.get_Allemployee()
+
+    .subscribe(data => {
+      this.cliente = data;
+      let sumaEdad =this.cliente.reduce((sumaEdad, clienteActual) => {
+
+        return sumaEdad + Number(clienteActual.edad);
+      }, this.promedio)
+      console.log(sumaEdad);
+
+      this.promedio = sumaEdad /this.cliente.length
+
+    })
 
 
 
 
 
 
+  // let sumaEdad =this.cliente.reduce((edadAcumular, edadActual) => {
+  //   return edadAcumular + edadActual;
+  // })
 
+  // console.log(sumaEdad/ this.edad.);
 
-
-
-    this.crudservice.get_Allemployee().subscribe(data => {
-
-      this.cliente = data.map(e => {
-        return {
-          id: e.payload.doc.id,
-          isedit:  false,
-          nombre: e.payload.doc.data()['name'],
-          apellido: e.payload.doc.data()['apellido'],
-          edad: e.payload.doc.data()['edad'],
-          fechanac: e.payload.doc.data()['fechanac'],
-        };
-      })
-      console.log(this.cliente);
-
-    });
   }
+  promedio:number =0;
 
   CreateRecord()
   {
@@ -89,6 +95,10 @@ ngOnInit() {
 
   }
 
+  edadpromedio(record){
+    record.edad = record.edad;
+  }
+
   Updatarecord(recorddata)
   {
     let record = {};
@@ -105,6 +115,8 @@ ngOnInit() {
   {
     this.crudservice.delete_employee(record_id);
   }
+
+
 
 
 }
